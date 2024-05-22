@@ -1,82 +1,33 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Button, TextInput, Image, Switch, Pressable } from 'react-native';
+import { StyleSheet, Text, View, Button, TextInput, Image, Switch, Pressable, FlatList,ToastAndroid } from 'react-native';
 import { useState } from "react";
+import { ListItem } from './components/ListItem';
+import { Tile } from './components/Tile';
+import { MyList } from './components/MyList';
 
-export default function App() {
-  const [on, setOn] = useState(false);
-  const [text, setText] = useState('Marek');
-  const [light, setLight] = useState(false);
-  const [circleRadius, setCircleRadius] = useState(22); 
-
+export default function App(message, duration) {
+  const [selected, setSelected]= useState(new Set());
+  const photos = [
+    {id: 1, title: 'AAA', thumbnailUrl:'https://reactnative.dev/img/tiny_logo.png', width: 60, height: 60},
+    {id: 2, title: 'BBB', thumbnailUrl:'https://reactnative.dev/img/tiny_logo.png', width: 50, height: 60},
+    {id: 3, title: 'CCC', thumbnailUrl:'https://reactnative.dev/img/tiny_logo.png', width: 80, height: 80}
+  ];
   return (
-    <View style={styles.container}>
-      <Text>
-        Hello
-        <Text style={{ fontWeight: 'bold' }}> World</Text>
-        !
-        {text}
-      </Text>
-      <Pressable onPress={() => setLight(!light)}>
-        <View style={styles.circle(light, circleRadius)} />
-      </Pressable>
-      <Button
-        title="Click"
-        onPress={() => {
-          setText('Karol');
-        }}
-        color={"darkblue"}
-        accessibilityLabel="Learn more about this purple button"
-      />
-      <TextInput
-        placeholder="placeholder"
-        multiline
-        editable={true}
-        numberOfLines={4}
-        autoFocus={true}
-        keyboardType="default"
-        autoCorrect={true}
-        style={{
-          padding: 5,
-          textAlignVertical: "top",
-          width: "95%",
-          borderWidth: 1,
-          borderRadius: 5,
-        }}
-      />
-      <TextInput
-        placeholder="circleRadius"
-        onChangeText={(value) => {
-          const numericValue = parseInt(value);
-          if (!isNaN(numericValue)) {
-            setCircleRadius(numericValue);
-          }
-        }}
-        multiline
-        editable={true}
-        numberOfLines={1}
-        keyboardType="numeric"
-        autoCorrect={true}
-        style={{
-          padding: 5,
-          textAlignVertical: "top",
-          width: "95%",
-          borderWidth: 1,
-          borderRadius: 5,
-          marginTop: 10,
-        }}
-      />
-      <Image
-        source={{ uri: "https://reactnative.dev/img/tiny_logo.png" }}
-        style={{ width: 50, height: 150, resizeMode: "stretch" }}
-      />
-      <Switch
-        value={on}
-        thumbColor={'blue'}
-        onValueChange={() => setOn(!on)}
-      />
-      <StatusBar style="auto" />
-    </View>
-  );
+        <View style={styles.container}>
+            <ListItem title='Test' thumbnailUrl='https://reactnative.dev/img/tiny_logo.png' width={50} height={50}/>
+            <Tile title='Test' thumbnailUrl='https://reactnative.dev/img/tiny_logo.png' width={50} height={50} />
+            <MyList
+                data={photos}
+                renderItem={({item}) => <Tile title={item.title} thumbnailUrl={item.thumbnailUrl} width={item.width} height={item.height}/>}
+                keyExtractor={(item) => item.id}
+                />
+            <Button
+              title='Click'
+              onPress={() => ToastAndroid.show("Selected " + selected.size, ToastAndroid.LONG)}
+            />
+            <StatusBar style="auto"/>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -87,7 +38,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   circle: (light, circleRadius) => ({
-    borderRadius: circleRadius / 2, 
+    borderRadius: circleRadius / 2,
     borderWidth: 5,
     borderColor: "blue",
     width: circleRadius,
