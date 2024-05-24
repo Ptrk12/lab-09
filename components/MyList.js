@@ -1,17 +1,23 @@
-import React, {Component, useState} from 'react';
-import {Image, Pressable, View, Text, FlatList, TouchableOpacity} from 'react-native';
-import {ListItem} from './ListItem'
+import React, { Component } from 'react';
+import { FlatList, TouchableOpacity } from 'react-native';
+import { ListItem } from './ListItem';
 
 export class MyList extends Component {
-    state = {selectedId: 0}
+    state = { selectedId: 0 };
+
+    handlePressItem = (item) => {
+        this.setState({ selectedId: item.id });
+        if (this.props.onPressItem) {
+            this.props.onPressItem(item);
+        }
+    };
+
     render() {
         return (
             <FlatList
                 data={this.props.data}
-                renderItem={({item}) =>
-                    <TouchableOpacity
-                        onPress={() => this.setState({selectedId: item.id})}
-                    >
+                renderItem={({ item }) => (
+                    <TouchableOpacity onPress={() => this.handlePressItem(item)}>
                         <ListItem
                             title={item.title}
                             width={item.width}
@@ -20,8 +26,8 @@ export class MyList extends Component {
                             selected={item.id == this.state.selectedId}
                         />
                     </TouchableOpacity>
-                }
-                keyExtractor={item => item.id}
+                )}
+                keyExtractor={(item) => item.id.toString()}
             />
         );
     }
